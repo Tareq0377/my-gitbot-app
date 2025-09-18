@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Cookie from "js-cookie";
+import Theme from "./ThemeToggle"
 
 
 const STUDENT_NUMBER = "21396516";
@@ -18,7 +19,7 @@ export default function Header() {
 
 
   return (
-    <header className="bg-indigo-600 text-white shadow-lg">
+    <header className="bg-indigo-600 text-white dark:bg-fuchsia-600">
       <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
         <div className="font-mono text-sm">{STUDENT_NUMBER}</div>
         <nav>
@@ -31,9 +32,13 @@ export default function Header() {
             <li><Link href="/docker" onClick={() => setTab("docker")} className="hover:underline">Docker </Link></li>
             <li><Link href="/prisma" onClick={() => setTab("prisma")} className="hover:underline">Prisma/Sequelize </Link></li>
             <li><Link href="/tests" onClick={() => setTab("tests")} className="hover:underline">Tests </Link></li>
+            <Theme/>
           </ul>
+          
         </nav>
+        
       </div>
+      
     </header>
   );
 }

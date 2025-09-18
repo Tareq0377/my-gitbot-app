@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react";
-
+import "./globals.css";
 
 type Method = "github-api" | "git-cli";
 
@@ -15,8 +15,7 @@ export default function Home() {
         e.preventDefault();
         setStatus("Processing...");
         try {
-            const endpoint = method === "github-api" ? "/api/update-readme-github" : "/api/update-readme";
-            const res = await fetch(endpoint, {
+            const res = await fetch('/', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
@@ -31,8 +30,9 @@ export default function Home() {
 
 
     return (
-        <div className="max-w-2xl mx-auto mt-8 p-6 bg-white dark:bg-gray-800 shadow-lg rounded-2xl">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Git Robot: Update README</h2>
+
+        <div className="max-w-2xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-2xl dark:bg-amber-400 text-emerald-600">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Git Bot: Update README</h2>
 
 
             <form onSubmit={handleSubmit} className="space-y-4" aria-describedby="form-help">
@@ -64,21 +64,6 @@ export default function Home() {
                 </div>
 
 
-                <fieldset className="space-y-2">
-                    <legend className="text-sm font-medium text-gray-700 dark:text-gray-300">Method</legend>
-                    <div className="flex items-center space-x-4">
-                        <label className="flex items-center space-x-2">
-                            <input type="radio" name="method" checked={method === "github-api"} onChange={() => setMethod("github-api")} />
-                            <span>GitHub API (recommended)</span>
-                        </label>
-                        <label className="flex items-center space-x-2">
-                            <input type="radio" name="method" checked={method === "git-cli"} onChange={() => setMethod("git-cli")} />
-                            <span>Git CLI (exec)</span>
-                        </label>
-                    </div>
-                </fieldset>
-
-
                 <button type="submit" className="w-full py-2 px-4 rounded-lg bg-indigo-600 text-white font-semibold shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Update README</button>
             </form>
 
@@ -86,7 +71,7 @@ export default function Home() {
             {status && <div role="status" aria-live="polite" className="mt-4 text-sm font-medium text-gray-900 dark:text-gray-100">{status}</div>}
 
 
-            <p id="form-help" className="mt-2 text-xs text-gray-500 dark:text-gray-400">Your token is used only for this request and not stored.</p>
+            <p id="form-help" className="mt-2 text-xs text-gray-500 dark:text-gray-400">Token is used only for this request and not stored.</p>
 
         </div>
     );
