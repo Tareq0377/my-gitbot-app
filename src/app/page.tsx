@@ -31,36 +31,36 @@ export default function Home() {
 
     return (
 
-        <div className="max-w-2xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-2xl dark:bg-amber-400 text-emerald-600">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Git Bot: Update README</h2>
+        <div className="max-w-2xl mx-auto mt-8 p-6 bg-gray-700 border-2 border-gray-900 rounded-2xl text-gray-50 dark:bg-gray-50 dark:text-gray-900">
+            <h2 className="text-2xl font-bold mb-4 text-gray-50 dark:text-gray-900">Git Bot: Update README</h2>
 
 
-            <form onSubmit={handleSubmit} className="space-y-4" aria-describedby="form-help">
+            <form onSubmit={handleSubmit} className="space-y-4 " aria-describedby="form-help">
                 <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
+                    <label htmlFor="username" className="block text-sm font-medium text-gray-50 dark:text-gray-900">Username</label>
                     <input id="username" required value={form.username} onChange={e => setForm({ ...form, username: e.target.value })}
-                        className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        className="mt-1 block w-full rounded-lg bg-gray-50 text-gray-700 border-gray-700 px-1.5 dark:border-gray-50 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                 </div>
 
 
                 <div>
-                    <label htmlFor="token" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Personal Access Token</label>
+                    <label htmlFor="token" className="block text-sm font-medium text-gray-50 dark:text-gray-900">Personal Access Token</label>
                     <input id="token" type="password" required value={form.token} onChange={e => setForm({ ...form, token: e.target.value })}
-                        className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        className="mt-1 block w-full rounded-lg bg-gray-50 text-gray-700 border-gray-700 px-1.5 dark:border-gray-50 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                 </div>
 
 
                 <div>
-                    <label htmlFor="owner" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Owner (org/user)</label>
+                    <label htmlFor="owner" className="block text-sm font-medium text-gray-50 dark:text-gray-900">Owner (org/user)</label>
                     <input id="owner" required value={form.owner} onChange={e => setForm({ ...form, owner: e.target.value })}
-                        className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        className="mt-1 block w-full rounded-lg bg-gray-50 text-gray-700 border-gray-700 px-1.5 dark:border-gray-50 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                 </div>
 
 
                 <div>
-                    <label htmlFor="repo" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Repo name</label>
+                    <label htmlFor="repo" className="block text-sm font-medium text-gray-50 dark:text-gray-900">Repo name</label>
                     <input id="repo" required value={form.repo} onChange={e => setForm({ ...form, repo: e.target.value })}
-                        className="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        className="mt-1 block w-full rounded-lg bg-gray-50 text-gray-700 border-gray-700 px-1.5 dark:border-gray-50 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                 </div>
 
 
@@ -71,7 +71,7 @@ export default function Home() {
             {status && <div role="status" aria-live="polite" className="mt-4 text-sm font-medium text-gray-900 dark:text-gray-100">{status}</div>}
 
 
-            <p id="form-help" className="mt-2 text-xs text-gray-500 dark:text-gray-400">Token is used only for this request and not stored.</p>
+            <p id="form-help" className="mt-2 text-xs text-gray-50 dark:text-gray-900">Token is used only for this request and not stored.</p>
 
         </div>
     );

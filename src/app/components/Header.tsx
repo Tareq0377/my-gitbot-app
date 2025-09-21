@@ -21,7 +21,7 @@ export default function Header() {
   return (
     <header className="bg-indigo-600 text-white dark:bg-fuchsia-600">
       <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="font-mono text-sm">{STUDENT_NUMBER}</div>
+        <div className="font-mono text-sm"><Link href="/" onClick={() => setTab("home")} className="">{STUDENT_NUMBER} </Link></div>
         <nav>
           <button onClick={() => setOpen(!open)} className="md:hidden p-2 focus:outline-none" aria-label="Toggle menu">
             <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" /></svg>

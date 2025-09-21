@@ -9,7 +9,7 @@ const STUDENT_NUMBER = "21396516";
 export default function Footer() {
   const today = format(new Date(), "yyyy-MM-dd");
   return (
-    <footer className="bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-300 py-4 mt-auto">
+    <footer className="bg-gray-700 dark:bg-gray-100 text-gray-50 dark:text-gray-700 py-4 mt-auto">
       <div className="max-w-6xl mx-auto px-4 text-sm flex justify-between">
         <span>&copy; {new Date().getFullYear()} {STUDENT_NAME} — {STUDENT_NUMBER}</span>
         <span>Date: {today}</span>
