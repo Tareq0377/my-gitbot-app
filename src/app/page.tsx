@@ -1,78 +1,119 @@
-"use client"
+"use client";
 import { useState } from "react";
-import "./globals.css";
-
-type Method = "github-api" | "git-cli";
-
 
 export default function Home() {
-    const [form, setForm] = useState({ username: "", token: "", owner: "", repo: "" });
-    const [method, setMethod] = useState<Method>("github-api");
-    const [status, setStatus] = useState<string | null>(null);
+  const [username, setUsername] = useState("");
+  const [token, setToken] = useState("");
+  const [owner, setOwner] = useState("");
+  const [repo, setRepo] = useState("");
+  const [running, setRunning] = useState(false);
+  const [log, setLog] = useState<string>("");
 
+  async function handleExecute(e: React.FormEvent) {
+    e.preventDefault();
+    setLog("");
+    setRunning(true);
 
-    async function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        setStatus("Processing...");
-        try {
-            const res = await fetch('/', {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data?.error || "Unknown error");
-            setStatus("✅ " + (data.message ?? "Done"));
-        } catch (err: any) {
-            setStatus("❌ " + String(err.message || err));
+    try {
+      const res = await fetch("/api/execute", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, token, owner, repo }),
+      });
+
+      const reader = res.body?.getReader();
+      if (!reader) {
+        const json = await res.json();
+        setLog(JSON.stringify(json, null, 2));
+        setRunning(false);
+        return;
+      }
+
+      const decoder = new TextDecoder();
+      let done = false;
+      while (!done) {
+        const { value, done: streamDone } = await reader.read();
+        if (value) {
+          setLog((prev) => prev + decoder.decode(value));
         }
+        done = streamDone;
+      }
+    } catch (err: any) {
+      setLog((prev) => prev + `\n[client error] ${String(err)}\n`);
+    } finally {
+      setRunning(false);
     }
+  }
 
+  return (
+    <div
+      className={"max-w-2xl mx-auto mt-8 p-6 bg-gray-700 border-2 border-gray-900 rounded-2xl text-gray-50 dark:bg-gray-50 dark:text-gray-900"}
+    >
+      <div className="p-6">
+        <form
+          onSubmit={handleExecute}
+          className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
+          <div>
+            <label className="block mb-1">Username:</label>
+            <input
+              className="w-full p-2 border rounded"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            <label className="block mt-3 mb-1">Token:</label>
+            <input
+              type="password"
+              className="w-full p-2 border rounded"
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+              required
+            />
+            <label className="block mt-3 mb-1">Owner:</label>
+            <input
+              className="w-full p-2 border rounded"
+              value={owner}
+              onChange={(e) => setOwner(e.target.value)}
+              required
+            />
+            <label className="block mt-3 mb-1">Repository:</label>
+            <input
+              className="w-full p-2 border rounded"
+              value={repo}
+              onChange={(e) => setRepo(e.target.value)}
+              required
+            />
+          </div>
 
-    return (
-
-        <div className="max-w-2xl mx-auto mt-8 p-6 bg-gray-700 border-2 border-gray-900 rounded-2xl text-gray-50 dark:bg-gray-50 dark:text-gray-900">
-            <h2 className="text-2xl font-bold mb-4 text-gray-50 dark:text-gray-900">Git Bot: Update README</h2>
-
-
-            <form onSubmit={handleSubmit} className="space-y-4 " aria-describedby="form-help">
-                <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-50 dark:text-gray-900">Username</label>
-                    <input id="username" required value={form.username} onChange={e => setForm({ ...form, username: e.target.value })}
-                        className="mt-1 block w-full rounded-lg bg-gray-50 text-gray-700 border-gray-700 px-1.5 dark:border-gray-50 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                </div>
-
-
-                <div>
-                    <label htmlFor="token" className="block text-sm font-medium text-gray-50 dark:text-gray-900">Personal Access Token</label>
-                    <input id="token" type="password" required value={form.token} onChange={e => setForm({ ...form, token: e.target.value })}
-                        className="mt-1 block w-full rounded-lg bg-gray-50 text-gray-700 border-gray-700 px-1.5 dark:border-gray-50 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                </div>
-
-
-                <div>
-                    <label htmlFor="owner" className="block text-sm font-medium text-gray-50 dark:text-gray-900">Owner (org/user)</label>
-                    <input id="owner" required value={form.owner} onChange={e => setForm({ ...form, owner: e.target.value })}
-                        className="mt-1 block w-full rounded-lg bg-gray-50 text-gray-700 border-gray-700 px-1.5 dark:border-gray-50 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                </div>
-
-
-                <div>
-                    <label htmlFor="repo" className="block text-sm font-medium text-gray-50 dark:text-gray-900">Repo name</label>
-                    <input id="repo" required value={form.repo} onChange={e => setForm({ ...form, repo: e.target.value })}
-                        className="mt-1 block w-full rounded-lg bg-gray-50 text-gray-700 border-gray-700 px-1.5 dark:border-gray-50 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                </div>
-
-
-                <button type="submit" className="w-full py-2 px-4 rounded-lg bg-indigo-600 text-white font-semibold shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Update README</button>
-            </form>
-
-
-            {status && <div role="status" aria-live="polite" className="mt-4 text-sm font-medium text-gray-900 dark:text-gray-100">{status}</div>}
-
-
-            <p id="form-help" className="mt-2 text-xs text-gray-50 dark:text-gray-900">Token is used only for this request and not stored.</p>
-
-        </div>
-    );
+          <div className="flex flex-col">
+            <button
+              type="submit"
+              disabled={running}
+              className="mt-4 bg-blue-600 text-white py-2 rounded"
+            >
+              {running ? "Running..." : "Execute"}
+            </button>
+            <div className="flex-1 p-4  bg-gray-700 text-gray-50 dark:bg-gray-50 dark:text-gray-800 overflow-auto">
+              {username && owner && repo && token && (
+                <pre className=" text-sm">
+                  {`
+git clone https://${username}:${token}@github.com/${owner}/${repo}.git
+cd ${repo}
+git checkout -b update-readme
+echo "## This is the System" >> README.md
+echo "Successfully connected!" >> README.md
+git add README.md
+git commit -m "Update README.md: Add new section"
+git push origin update-readme
+gh pr create --title "Update README.md" --body "Added a new section to the README"
+    `}
+                </pre>
+              )}
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
