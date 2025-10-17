@@ -15,29 +15,18 @@ export default function Home() {
     setRunning(true);
 
     try {
-      const res = await fetch("/api/execute", {
+      const res = await fetch("/api/updateReadme", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, token, owner, repo }),
       });
-
-      const reader = res.body?.getReader();
-      if (!reader) {
-        const json = await res.json();
-        setLog(JSON.stringify(json, null, 2));
-        setRunning(false);
-        return;
-      }
-
-      const decoder = new TextDecoder();
-      let done = false;
-      while (!done) {
-        const { value, done: streamDone } = await reader.read();
-        if (value) {
-          setLog((prev) => prev + decoder.decode(value));
-        }
-        done = streamDone;
-      }
+      const data = await res.json();
+      console.log(data);
+      if (data.prUrl) {
+      setLog(`✅ Pull Request created: ${data.prUrl}`);
+    } else {
+      setLog(`❌ Error: ${data.error}`);
+    }
     } catch (err: any) {
       setLog((prev) => prev + `\n[client error] ${String(err)}\n`);
     } finally {
@@ -47,7 +36,9 @@ export default function Home() {
 
   return (
     <div
-      className={"max-w-2xl mx-auto mt-8 p-6 bg-gray-700 border-2 border-gray-900 rounded-2xl text-gray-50 dark:bg-gray-50 dark:text-gray-900"}
+      className={
+        "max-w-2xl mx-auto mt-8 p-6 bg-gray-700 border-2 border-gray-900 rounded-2xl text-gray-50 dark:bg-gray-50 dark:text-gray-900"
+      }
     >
       <div className="p-6">
         <form
