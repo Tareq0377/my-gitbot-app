@@ -3,20 +3,22 @@ import { Octokit } from '@octokit/rest';
 
 export async function POST(request: Request) {
   try {
-    const { owner, repo } = await request.json();
+    const { username, token, owner, repo } = await request.json();
 
-    if (!owner || !repo) {
-      return NextResponse.json({ error: 'owner and repo are required' }, { status: 400 });
+    if (!owner || !repo || !username || !token) {
+      return NextResponse.json({ error: 'username, token, owner and repo are required' }, { status: 400 });
     }
 
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
     // 1️⃣ Get repository info
-    const { data: repoData } = await octokit.repos.get({ owner, repo });
+    const { data: repoData } = await octokit.repos.get({ username, token, owner, repo });
     const baseBranch = repoData.default_branch;
 
     // 2️⃣ Get latest commit SHA from default branch
     const { data: refData } = await octokit.git.getRef({
+      username,
+      token,
       owner,
       repo,
       ref: `heads/${baseBranch}`,
@@ -28,7 +30,7 @@ export async function POST(request: Request) {
 
     // 3️⃣ Check if branch exists
     try {
-      await octokit.repos.getBranch({ owner, repo, branch: branchName });
+      await octokit.repos.getBranch({ username, token, owner, repo, branch: branchName });
       branchExists = true;
     } catch (err: any) {
       if (err.status !== 404) throw err;
@@ -37,6 +39,8 @@ export async function POST(request: Request) {
     // 4️⃣ Create new branch if not exists
     if (!branchExists) {
       await octokit.git.createRef({
+        username,
+        token,
         owner,
         repo,
         ref: `refs/heads/${branchName}`,
@@ -46,6 +50,8 @@ export async function POST(request: Request) {
 
     // 5️⃣ Get README.md content
     const { data: readmeData } = await octokit.repos.getContent({
+      username,
+      token,
       owner,
       repo,
       path: 'README.md',
@@ -65,6 +71,8 @@ export async function POST(request: Request) {
 
     // 6️⃣ Update README.md
     await octokit.repos.createOrUpdateFileContents({
+      username,
+      token,
       owner,
       repo,
       path: 'README.md',
@@ -76,6 +84,8 @@ export async function POST(request: Request) {
 
     // 7️⃣ Check if PR already exists
     const { data: prs } = await octokit.pulls.list({
+      username,
+      token,
       owner,
       repo,
       head: `${owner}:${branchName}`,
@@ -87,6 +97,8 @@ export async function POST(request: Request) {
     // 8️⃣ Create PR only if it doesn't exist
     if (!prUrl) {
       const pr = await octokit.pulls.create({
+        username,
+        token,
         owner,
         repo,
         title: 'Update README.md',

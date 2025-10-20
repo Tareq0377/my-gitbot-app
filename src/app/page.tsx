@@ -105,6 +105,9 @@ gh pr create --title "Update README.md" --body "Added a new section to the READM
           </div>
         </form>
       </div>
+      <div>
+        {log}
+      </div>
     </div>
   );
 }
